@@ -1,0 +1,164 @@
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    font-family: 'Helvetica Neue', 'Luxi Sans', 'Segoe UI', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif, 'Apple Logo';
+    line-height: 1.5;
+    color: #fff;
+    font-size: 14px;
+    background-color: #333;
+    background-image: url(./tactile_noise.webp);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #999;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #ccc;
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border-left: 1px solid rgb(226 226 226 / 10%);
+    border-right: 1px solid rgb(226 226 226 / 10%);
+    box-shadow: 0 1px 5px rgb(0 0 0 / 50%);
+    background-color: rgb(0 0 0 / 20%);
+}
+
+.title {
+    font-weight: bold;
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0px 5px 0px #000000;
+}
+
+.main {
+    margin-bottom: 20px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.item .name {
+    width: 80px;
+    font-size: 15px;
+    text-align: right;
+    color: rgb(255 255 255 / 85%);
+    text-shadow: 0px 2px 0px #000000;
+}
+
+.item .value {
+    padding-left: 10px;
+}
+
+.duration, .resolution {
+    width: 120px;
+    height: 30px;
+    padding: 0 10px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 13px;
+    border: 1px solid #222;
+    background-color: rgb(0 0 0 / 75%);
+    outline: none;
+}
+
+.audio, .frame {
+    color: #eee;
+    font-size: 14px;
+}
+
+.gap {
+    padding: 0 5px;
+}
+
+.generate {
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #3f51b5;
+}
+
+.generate:hover {
+    background-color: #2239b8;
+}
+
+.footer {
+    text-align: center;
+}
+
+.footer a {
+    color: #fff;
+    font-size: 16px;
+}
+
+.log {
+    height: 300px;
+    padding: 10px;
+    font-size: 13px;
+    overflow: auto;
+    color: #fff;
+    border-radius: 5px;
+    background-color: #000;
+}
+
+.log .line {
+    display: flex;
+    align-items: center;
+}
+
+.log .item {
+    display: flex;
+    align-items: center;
+}
+
+.log .info {
+    color: #ccc;
+}
+
+.log .error {
+    color: #ff3d00;
+}
+
+.log .warn {
+    color: #ff9800;
+}
+
+.log .success {
+    color: #4caf50;
+}
+
+.log .loading {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}

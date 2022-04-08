@@ -5,12 +5,59 @@
     <meta charset="UTF-8">
     <title>Generate blank video online</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="generate, blank, video, online" />
+    <meta name="description" content="Generate blank video online" />
     <link rel="stylesheet" href="./normalize.css">
     <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
+    <div id="root">
+        <div class="title">Generate blank video online</div>
+        <div class="main">
+            <div class="item">
+                <div class="name">Duration:</div>
+                <div class="value">
+                    <input class="duration hour" value="" type="number" placeholder="Hour" min="0" max="10">
+                    <span class="gap">:</span>
+                    <input class="duration minute" value="" type="number" placeholder="Minute" min="0" max="59">
+                    <span class="gap">:</span>
+                    <input class="duration second" value="30" type="number" placeholder="Second" min="0" max="59">
+                </div>
+            </div>
+            <div class="item">
+                <div class="name">Resolution:</div>
+                <div class="value">
+                    <select class="resolution">
+                        <option value="360">360P</option>
+                        <option value="720">720P</option>
+                        <option value="1080">1080P</option>
+                    </select>
+                </div>
+            </div>
+            <div class="item">
+                <div class="name">Audio:</div>
+                <div class="value">
+                    <input type="file" class="audio">
+                </div>
+            </div>
+            <div class="item">
+                <div class="name">Frame:</div>
+                <div class="value">
+                    <input type="file" class="frame">
+                </div>
+            </div>
+            <div class="generate">Start Generate</div>
+            <div class="log"></div>
+        </div>
+        <div class="footer">
+            <a href="https://github.com/zhw2590582/blank">View source on GitHub</a>
+        </div>
+    </div>
+    <script src="./ffmpeg.min.rebuild.js"></script>
+    <script src="./SimpleFS.js"></script>
     <script src="./main.js"></script>
 </body>
 
