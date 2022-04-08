@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Generate blank video online",
   "scripts": {
-    "start": "npx pm2 start index.js --watch",
-    "kill": "npx pm2 delete all"
+    "start": "node index.js"
   },
   "license": "MIT",
   "dependencies": {
