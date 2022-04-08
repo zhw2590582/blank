@@ -11,10 +11,6 @@ self.addEventListener('fetch', function (event) {
         return;
     }
 
-    if (event.request.url.includes('ffmpeg') || event.request.url.includes('loading')) {
-        return;
-    }
-
     event.respondWith(
         fetch(event.request).then(function (response) {
             // It seems like we only need to set the headers for index.html
