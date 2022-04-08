@@ -128,6 +128,13 @@ async function loadFFmpeg() {
     return ffmpeg;
 }
 
+function getDuration() {
+    const duration = $second.valueAsNumber + ($minute.valueAsNumber || 0) * 60 + ($hour.valueAsNumber || 0) * 3600;
+    if (duration <= 0) throw new Error("The duration can't empty");
+    if (duration >= 3600 * 10) throw new Error("The duration can't greater than 10 hours");
+    return duration;
+}
+
 $log.addEventListener('mousemove', function () {
     hover = true;
 });
@@ -142,7 +149,7 @@ $log.addEventListener('mouseleave', function () {
 
 $generate.addEventListener('click', async function () {
     try {
-        const duration = '';
+        const duration = getDuration();
 
         log({
             type: 'warn',
