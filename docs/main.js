@@ -13,12 +13,7 @@ function log(data) {
     if (count >= 200) $log.removeChild($log.firstElementChild);
     if (data.replace) $log.removeChild($log.lastElementChild);
 
-    $log.insertAdjacentHTML(
-        'beforeend',
-        `<div class="line ${data.type}">${data.loading ? `<img class="loading" src="./loading.svg" />` : ''} ${
-            data.message
-        }</div>`,
-    );
+    $log.insertAdjacentHTML('beforeend', `<div class="line ${data.type}">${data.message}</div>`);
 
     if (!hover) {
         $log.scrollTop = $log.scrollHeight;
@@ -70,7 +65,7 @@ async function loadWasm() {
 
         const loadFromUrl = () =>
             fetch(url).then((response) => {
-                const length = Number(response.headers.get('content-length'));
+                const length = Number(response.headers.get('content-length')) || 24354956;
                 const reader = response.body.getReader();
                 let data = new Uint8Array();
                 return (async function loop() {
@@ -89,7 +84,6 @@ async function loadWasm() {
                             message: `[${(ratioNum * 100).toFixed(2)}%] - Loading ${url}`,
                             type: 'warn',
                             replace: true,
-                            loading: true,
                         });
                         return loop();
                     });
@@ -119,8 +113,6 @@ async function loadFFmpeg() {
     });
     ffmpeg.setLogger((data) => {
         const isFrame = data.message.startsWith('frame=') || data.message.startsWith('size=');
-        const isFetch = data.message.startsWith('fetch');
-
         const progress = isFrame ? parseFloat((ts2sec(data.message) / duration).toFixed(3)) : 0;
         const message = isFrame ? `[${(progress * 100).toFixed(2)}%] - ${data.message}` : data.message;
 
@@ -128,7 +120,6 @@ async function loadFFmpeg() {
             message: message,
             type: isFrame ? 'warn' : 'info',
             replace: isFrame,
-            loading: isFetch,
         });
 
         if (isFrame) {
