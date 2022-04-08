@@ -206,3 +206,15 @@ $generate.addEventListener('click', async function () {
         throw error;
     }
 });
+
+log(
+    window.crossOriginIsolated
+        ? {
+              type: 'success',
+              message: 'Cross Origin Isolated: ON',
+          }
+        : {
+              type: 'error',
+              message: 'Cross Origin Isolated: OFF',
+          },
+);
