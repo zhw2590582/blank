@@ -1,12 +1,12 @@
 let hover = false;
+let duration = 0;
 const $log = document.querySelector('.log');
 const $generate = document.querySelector('.generate');
 const $hour = document.querySelector('.hour');
 const $minute = document.querySelector('.minute');
 const $second = document.querySelector('.second');
 const $resolution = document.querySelector('.resolution');
-const $audio = document.querySelector('.audio');
-const $frame = document.querySelector('.frame');
+const $poster = document.querySelector('.poster');
 
 function log(data) {
     const count = $log.childElementCount;
@@ -43,6 +43,20 @@ function download(url, name) {
     document.body.appendChild(elink);
     elink.click();
     document.body.removeChild(elink);
+}
+
+function getSize(byteLength) {
+    return Math.floor(byteLength / 1024) + 'kb';
+}
+
+function getTime(time) {
+    return Math.floor(time / 1000) + 's';
+}
+
+function ts2sec(message) {
+    const ts = message.split('time=')[1].split(' ')[0];
+    const [h, m, s] = ts.split(':');
+    return parseFloat(h) * 60 * 60 + parseFloat(m) * 60 + parseFloat(s);
 }
 
 async function loadWasm() {
@@ -103,11 +117,12 @@ async function loadFFmpeg() {
         corePath: `./ffmpeg/ffmpeg-core.js`,
         _wasmPath,
     });
-    let ratioNum = 0;
     ffmpeg.setLogger((data) => {
         const isFrame = data.message.startsWith('frame=') || data.message.startsWith('size=');
         const isFetch = data.message.startsWith('fetch');
-        const message = isFrame ? `[${(ratioNum * 100).toFixed(2)}%] - ${data.message}` : data.message;
+
+        const progress = isFrame ? parseFloat((ts2sec(data.message) / duration).toFixed(3)) : 0;
+        const message = isFrame ? `[${(progress * 100).toFixed(2)}%] - ${data.message}` : data.message;
 
         log({
             message: message,
@@ -117,11 +132,10 @@ async function loadFFmpeg() {
         });
 
         if (isFrame) {
-            document.title = `[${(ratioNum * 100).toFixed(2)}%] - Video is generating...`;
+            document.title = `[${(progress * 100).toFixed(2)}%] - Video is generating...`;
+        } else {
+            document.title = 'Generate blank video online';
         }
-    });
-    ffmpeg.setProgress(({ ratio }) => {
-        ratioNum = ratio;
     });
     ffmpeg.setLogging(false);
     await ffmpeg.load();
@@ -149,43 +163,47 @@ $log.addEventListener('mouseleave', function () {
 
 $generate.addEventListener('click', async function () {
     try {
-        const duration = getDuration();
-
-        log({
-            type: 'warn',
-            loading: true,
-            message: 'Start loading FFMPEG dependence, please wait...',
-        });
-        const ffmpeg = await loadFFmpeg();
-        log({ type: 'success', message: 'Load FFMPEG dependence success' });
+        const now = Date.now();
+        const { fetchFile } = FFmpeg;
+        duration = getDuration();
+        const resolution = $resolution.value;
+        const poster = $poster.files[0];
         const output = `${Date.now()}.mp4`;
 
-        await ffmpeg.run(
-            '-t',
-            '60',
-            '-f',
-            'lavfi',
-            '-i',
-            'color=c=black:s=640x480',
-            '-c:v',
-            'libx264',
-            '-tune',
-            'stillimage',
-            '-pix_fmt',
-            'yuv420p',
-            output,
-        );
+        log({ type: 'warn', message: 'Start loading FFMPEG dependence, please wait...' });
+        const ffmpeg = await loadFFmpeg();
+        log({ type: 'success', message: 'Load FFMPEG dependence success' });
 
-        // ffmpeg -t 7200 -f lavfi -i color=c=black:s=640x480 -c:v libx264 -tune stillimage -pix_fmt yuv420p output.mp4
-        // ffmpeg -f lavfi -i color=c=black:s=640x480 -i audio.ogg -c:v libx264 -tune stillimage -pix_fmt yuv420p -shortest -c:a aac -b:a 128k output-with-audio.mp4
-        // ffmpeg -loop 1 -i black.png -i 'input.mp3' -c:v libx264 -tune stillimage -shortest -pix_fmt yuv420p 'output.mp4'
-        // ffmpeg -f lavfi -i color=c=black:s=1280x720:r=5 -i audio.mp3 -crf 0 -c:a copy -shortest output.mp4
+        if (poster) {
+            ffmpeg.FS('writeFile', poster.name, await fetchFile(poster));
+            log({ type: 'success', message: `Load poster image: ${poster.name}` });
+        }
+
+        const cmd = [];
+
+        if (poster) {
+            cmd.push('-loop', '1');
+            cmd.push('-i', poster.name);
+            cmd.push('-vf', `scale=${resolution.replace('x', ':')}`);
+        } else {
+            cmd.push('-f', 'lavfi');
+            cmd.push('-i', `color=c=black:s=${resolution}`);
+        }
+
+        cmd.push('-t', String(duration));
+        cmd.push('-c:v', 'libx264');
+        cmd.push('-tune', 'stillimage');
+        cmd.push('-pix_fmt', 'yuv420p');
+        cmd.push(output);
+        await ffmpeg.run(...cmd);
 
         const uint8 = ffmpeg.FS('readFile', output);
+        log({ type: 'success', message: `Video size: ${getSize(uint8.byteLength)}` });
         download(URL.createObjectURL(new Blob([uint8])), output);
-        log({ type: 'success', message: 'Video download done' });
+        log({ type: 'success', message: `Video download: ${getTime(Date.now() - now)}` });
     } catch (error) {
         log({ type: 'error', message: error.message });
+        throw error;
     }
 });
 

@@ -9,5 +9,5 @@ app.all('*', (_, res, next) => {
     next();
 });
 
-app.use(serveStatic('public', { index: ['index.html'] }));
+app.use(serveStatic('docs', { index: ['index.html'] }));
 app.listen(port, () => console.log(`The Web listening on port ${port}!`));
