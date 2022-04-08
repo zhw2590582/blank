@@ -141,37 +141,35 @@ $log.addEventListener("mouseleave", function () {
 
 $generate.addEventListener("click", async function () {
   try {
-    const { fetchFile } = FFmpeg;
     log({
       type: "warn",
       loading: true,
       message: "Start loading FFMPEG dependence, please wait...",
     });
+
     const ffmpeg = await loadFFmpeg();
     log({ type: "success", message: "Load FFMPEG dependence success" });
     const output = `${Date.now()}.mp4`;
 
-    // ffmpeg.FS("writeFile", videoFile.name, await fetchFile(videoFile));
-    // log({ type: "success", message: `Load video file: ${videoFile.name}` });
-    // ffmpeg.FS("writeFile", subtitleFile.name, await fetchFile(subtitleFile));
-    // log({
-    //   type: "success",
-    //   message: `Load subtitle file: ${subtitleFile.name}`,
-    // });
+    await ffmpeg.run(
+      "-t",
+      "60",
+      "-f",
+      "lavfi",
+      "-i",
+      "color=c=black:s=640x480",
+      "-c:v",
+      "libx264",
+      "-tune",
+      "stillimage",
+      "-pix_fmt",
+      "yuv420p",
+      output
+    );
 
-    // await ffmpeg.run(
-    //   "-i",
-    //   videoFile.name,
-    //   "-vf",
-    //   `ass=${subtitleFile.name}:fontsdir=/tmp`,
-    //   "-preset",
-    //   "fast",
-    //   output
-    // );
-
-    // const uint8 = ffmpeg.FS("readFile", output);
-    // download(URL.createObjectURL(new Blob([uint8])), output);
-    // log({ type: "success", message: "Video download done" });
+    const uint8 = ffmpeg.FS("readFile", output);
+    download(URL.createObjectURL(new Blob([uint8])), output);
+    log({ type: "success", message: "Video download done" });
   } catch (error) {
     log({ type: "error", message: error.message });
   }
