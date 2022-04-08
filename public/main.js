@@ -1,6 +1,12 @@
 let hover = false;
 const $log = document.querySelector('.log');
 const $generate = document.querySelector('.generate');
+const $hour = document.querySelector('.hour');
+const $minute = document.querySelector('.minute');
+const $second = document.querySelector('.second');
+const $resolution = document.querySelector('.resolution');
+const $audio = document.querySelector('.audio');
+const $frame = document.querySelector('.frame');
 
 function log(data) {
     const count = $log.childElementCount;
@@ -136,6 +142,8 @@ $log.addEventListener('mouseleave', function () {
 
 $generate.addEventListener('click', async function () {
     try {
+        const duration = '';
+
         log({
             type: 'warn',
             loading: true,
@@ -182,6 +190,6 @@ log(
           }
         : {
               type: 'error',
-              message: 'Cross Origin Isolated: OFF',
+              message: 'Cross Origin Isolated: OFF, please refresh the page',
           },
 );
