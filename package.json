@@ -1,0 +1,14 @@
+{
+  "name": "blank",
+  "version": "1.0.0",
+  "description": "Generate blank video online",
+  "scripts": {
+    "start": "npx pm2 start index.js --watch",
+    "kill": "npx pm2 delete all"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.3",
+    "serve-static": "^1.15.0"
+  }
+}
